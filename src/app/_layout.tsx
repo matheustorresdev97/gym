@@ -8,9 +8,15 @@ import {
 } from '@expo-google-fonts/roboto'
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
 
+import { Loading } from "@/components/loading"
+
 
 export default function RootLayout() {
     const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular })
+
+    if (!fontsLoaded) {
+        return <Loading />
+    }
 
     return (
         <GestureHandlerRootView className="flex-1">
@@ -20,10 +26,10 @@ export default function RootLayout() {
                     backgroundColor="transparent"
                     translucent
                 />
-                <Stack  
+                <Stack
                     screenOptions={{
                         headerShown: false,
-                       
+
                     }}
                 />
             </GluestackUIProvider>
