@@ -1,10 +1,8 @@
-import { Center } from '@/components/ui/center';
-import { Text } from 'react-native';
+import { Redirect } from 'expo-router';
+
 
 export default function Index() {
     return (
-        <Center className='flex-1 bg-gray-700'>
-            <Text>Hello!</Text>
-        </Center>
+        <Redirect href={"/(auth)/sign-in"} />
     )
 }

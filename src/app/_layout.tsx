@@ -1,3 +1,4 @@
+import "@/styles/global.css"
 import { Stack } from "expo-router"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { StatusBar } from "react-native"
@@ -29,7 +30,6 @@ export default function RootLayout() {
                 <Stack
                     screenOptions={{
                         headerShown: false,
-
                     }}
                 />
             </GluestackUIProvider>
