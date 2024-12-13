@@ -1,11 +1,13 @@
+import { Image, Text } from "react-native";
 import { Center } from "@/components/ui/center";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
-import { Image, Text } from "react-native";
-
-import Logo from '@/assets/logo.svg';
 
 import { Input } from "@/components/input";
+import { Button } from "@/components/button";
+
+
+import Logo from '@/assets/logo.svg';
 
 export default function SignIn() {
     return (
@@ -27,8 +29,15 @@ export default function SignIn() {
 
                 <Center className="gap-2">
                     <Heading className="text-gray100">Acesse sua conta</Heading>
-                    <Input placeholder="E-mail" />
-                    <Input placeholder="Senha" />
+                    <Input
+                        placeholder="E-mail"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+
+                    <Input placeholder="Senha" secureTextEntry />
+
+                    <Button title="Acessar" />
                 </Center>
             </VStack>
         </VStack>
