@@ -54,8 +54,12 @@ export default function SignUp() {
                         <Button title="Criar e acessar" />
                     </Center>
 
-                    <Button className="mt-12" title="Voltar para o login" variant="outline" onPress={handleGoBack} />
 
+                    <Button
+                        title="Voltar para o login"
+                        variant="outline"
+                        onPress={handleGoBack}
+                    />
                 </VStack>
             </VStack>
         </ScrollView>
