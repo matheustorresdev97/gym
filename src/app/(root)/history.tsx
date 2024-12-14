@@ -22,11 +22,11 @@ export default function History() {
 
     return (
         <VStack className="flex-1 bg-colors-gray700">
-            <ScreenHeader title="Histórico" />
+             <ScreenHeader title="Histórico de Exercícios" />
             <SectionList
                 sections={exercises}
                 keyExtractor={(item) => item}
-                renderItem={({ item }) => <HistoryCard />}
+                renderItem={() => <HistoryCard />}
                 renderSectionHeader={({ section }) => (
                     <Heading className='text-colors-gray200 text-base mt-10 mb-3'>
                         {section.title}
