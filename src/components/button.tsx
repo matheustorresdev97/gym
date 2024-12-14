@@ -2,7 +2,7 @@ import { Button as GluestackButton, ButtonText, ButtonSpinner } from '@/componen
 import { ComponentProps } from 'react'
 import clsx from 'clsx'
 
-type ButtonProps = ComponentProps<typeof ButtonText> & {
+type ButtonProps = ComponentProps<typeof GluestackButton> & {
     title: string
     variant?: 'solid' | 'outline'
     isLoading?: boolean
@@ -22,6 +22,7 @@ export function Button({
                     'bg-green700 border-0 data-[active=true]:border-green500': variant === 'solid',
                     'bg-transparent border border-green500 data-[active=true]:border-gray500': variant === 'outline',
                 },
+                { ...props }
             )}
             disabled={isLoading}
         >
@@ -36,7 +37,7 @@ export function Button({
                             'text-green500': variant === 'outline',
                         }
                     )}
-                    {...props}
+
                 >
                     {title}
                 </ButtonText>
