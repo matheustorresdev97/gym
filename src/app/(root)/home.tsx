@@ -1,10 +1,10 @@
-import { Center } from "@/components/ui/center";
-import { Text } from "react-native";
+import { Header } from "@/components/header";
+import { VStack } from "@/components/ui/vstack";
 
 export default function Home() {
     return (
-        <Center className="flex-1 bg-gray700">
-            <Text className="text-white">Home</Text>
-        </Center>
+        <VStack className="flex-1 bg-gray700">
+            <Header />
+        </VStack>
     )
 }
