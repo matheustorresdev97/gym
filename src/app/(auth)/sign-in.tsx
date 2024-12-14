@@ -10,9 +10,15 @@ import { Button } from "@/components/button";
 
 
 import Logo from '@/assets/logo.svg';
+import { router } from "expo-router";
 
 
 export default function SignIn() {
+
+    function handleNewAccount() {
+        router.navigate('/(auth)/sign-up');
+    }
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -51,7 +57,11 @@ export default function SignIn() {
                         <Text className="text-gray100 text-sm mb-3 font-body">
                             Ainda não tem acesso?
                         </Text>
-                        <Button title="Criar conta" variant="solid" />
+                        <Button
+                            title="Criar conta"
+                            variant="outline"
+                            onPress={handleNewAccount}
+                        />
                     </Center>
                 </VStack>
             </VStack>

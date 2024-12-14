@@ -10,8 +10,14 @@ import { Button } from "@/components/button";
 
 
 import Logo from '@/assets/logo.svg';
+import { router } from "expo-router";
 
 export default function SignUp() {
+
+    function handleGoBack() {
+        router.back()
+    }
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -48,7 +54,7 @@ export default function SignUp() {
                         <Button title="Criar e acessar" />
                     </Center>
 
-                    <Button className="mt-12" title="Voltar para o login" variant="outline" />
+                    <Button className="mt-12" title="Voltar para o login" variant="outline" onPress={handleGoBack} />
 
                 </VStack>
             </VStack>

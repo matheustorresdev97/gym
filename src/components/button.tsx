@@ -22,9 +22,9 @@ export function Button({
                     'bg-green700 border-0 data-[active=true]:border-green500': variant === 'solid',
                     'bg-transparent border border-green500 data-[active=true]:border-gray500': variant === 'outline',
                 },
-                { ...props }
             )}
             disabled={isLoading}
+            { ...props }
         >
             {isLoading ? (
                 <ButtonSpinner color="$white" />
