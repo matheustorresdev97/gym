@@ -3,7 +3,7 @@ import { Text } from "react-native";
 
 export default function Profile() {
     return (
-        <Center className="flex-1">
+        <Center className="flex-1 bg-gray700">
             <Text>Profile</Text>
         </Center>
     )
