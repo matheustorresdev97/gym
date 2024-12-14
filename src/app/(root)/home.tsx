@@ -32,7 +32,7 @@ export default function Home() {
                 renderItem={({ item }) => (
                     <Group
                         name={item}
-                        isActive={groupSelected === item}
+                        isActive={groupSelected.toLowerCase() === item.toLowerCase()}
                         onPress={() => setGroupSelected(item)}
                     />
                 )}
@@ -42,7 +42,7 @@ export default function Home() {
                 style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
             />
 
-            <VStack className='px-8 flex-'>
+            <VStack className='px-8 flex-1'>
                 <HStack className='justify-between mb-5 items-center'>
                     <Heading className='text-colors-gray200 text-base'>
                         Exercícios

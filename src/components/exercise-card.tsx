@@ -6,7 +6,7 @@ import { Heading } from './ui/heading'
 import Entypo from '@expo/vector-icons/Entypo';
 import { colors } from '@/styles/colors';
 
-type Props = TouchableOpacityProps
+type Props = TouchableOpacityProps & {}
 
 export function ExerciseCard({ ...props }: Props) {
     return (
