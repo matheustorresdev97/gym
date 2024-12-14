@@ -24,7 +24,7 @@ export default function SignIn() {
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
         >
-            <VStack className="flex-1 colors-gray700">
+            <VStack className="flex-1 bg-colors-gray700">
                 <Image
                     className="w-full h-[624px] absolute"
                     source={require("@/assets/background.png")}
@@ -35,13 +35,13 @@ export default function SignIn() {
                 <VStack className="flex-1 px-10 pb-16">
                     <Center className="my-24">
                         <Logo />
-                        <Text className="text-gray100 text-sm">
+                        <Text className="text-colors-gray100 text-sm">
                             Treine sua mente e seu corpo
                         </Text>
                     </Center>
 
                     <Center className="gap-2">
-                        <Heading className="text-gray100">Acesse sua conta</Heading>
+                        <Heading className="text-colors-gray100">Acesse sua conta</Heading>
                         <Input
                             placeholder="E-mail"
                             keyboardType="email-address"
@@ -54,7 +54,7 @@ export default function SignIn() {
                     </Center>
 
                     <Center className="flex-1 justify-end mt-4">
-                        <Text className="text-gray100 text-sm mb-3 font-body">
+                        <Text className="text-colors-gray100 text-sm mb-3 font-body">
                             Ainda não tem acesso?
                         </Text>
                         <Button

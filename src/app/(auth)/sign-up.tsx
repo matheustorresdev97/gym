@@ -34,12 +34,12 @@ export default function SignUp() {
                 <VStack className="flex-1 px-10 pb-16">
                     <Center className="my-24">
                         <Logo />
-                        <Text className="text-gray100 text-sm">
+                        <Text className="text-colors-gray100 text-sm">
                             Treine sua mente e seu corpo
                         </Text>
                     </Center>
                     <Center className="flex-1 gap-2">
-                        <Heading className="text-gray100">Crie sua conta</Heading>
+                        <Heading className="text-colors-gray100">Crie sua conta</Heading>
 
                         <Input placeholder="Nome" />
 

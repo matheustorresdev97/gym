@@ -8,6 +8,7 @@ import { Heading } from '@/components/ui/heading';
 import { Group } from "@/components/group";
 import { Header } from "@/components/header";
 import { ExerciseCard } from '@/components/exercise-card';
+import { router } from 'expo-router';
 
 export default function Home() {
     const [exercises, setExercises] = useState([
@@ -21,6 +22,10 @@ export default function Home() {
     ])
     const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
     const [groupSelected, setGroupSelected] = useState('costas')
+
+    function handleOpenExerciseDetails() {
+        router.navigate('/exercise')
+    }
 
     return (
         <VStack className="flex-1 bg-colors-gray700">
@@ -55,7 +60,9 @@ export default function Home() {
                 <FlatList
                     data={exercises}
                     keyExtractor={(item) => item}
-                    renderItem={({ item }) => <ExerciseCard />}
+                    renderItem={() => (
+                        <ExerciseCard onPress={handleOpenExerciseDetails} />
+                    )}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 20 }}
                 />

@@ -8,9 +8,10 @@ export function HistoryCard() {
         <HStack
             className="w-full px-5 py-4 mb-3 bg-colors-gray600 rounded-md items-center justify-between"
         >
-            <VStack className="mr-5">
+            <VStack className="flex-1 mr-5">
                 <Heading
                     className="text-white text-base font-heading capitalize"
+                    numberOfLines={1}
                 >
                     Costas
                 </Heading>
