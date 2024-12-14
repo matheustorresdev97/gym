@@ -9,7 +9,7 @@ type InputProps = ComponentProps<typeof InputField>
 export function Input({ ...props }: InputProps) {
     return (
         <GluestackInput
-            className="bg-gray700 h-14 px-4 border border-transparent rounded-md data-[focus=true]:border-green500"
+            className="bg-colors-gray700 h-14 px-4 border border-transparent rounded-md data-[focus=true]:border-green500"
             focusable
         >
             <InputField

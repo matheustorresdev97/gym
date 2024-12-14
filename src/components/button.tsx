@@ -19,8 +19,8 @@ export function Button({
             className={clsx(
                 'w-full h-14 rounded-sm border',
                 {
-                    'bg-green700 border-0 data-[active=true]:border-green500': variant === 'solid',
-                    'bg-transparent border border-green500 data-[active=true]:border-gray500': variant === 'outline',
+                    'bg-colors-green700 border-0 data-[active=true]:border-green500': variant === 'solid',
+                    'bg-transparent border border-colors-green500 data-[active=true]:border-colors-gray500': variant === 'outline',
                 },
             )}
             disabled={isLoading}
@@ -34,7 +34,7 @@ export function Button({
                         'font-heading text-sm',
                         {
                             'text-white': variant === 'solid',
-                            'text-green500': variant === 'outline',
+                            'text-colors-green500': variant === 'outline',
                         }
                     )}
 

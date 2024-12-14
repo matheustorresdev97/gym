@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { Group } from "@/components/group";
 import { Header } from "@/components/header";
 import { VStack } from "@/components/ui/vstack";
-import { FlatList } from 'react-native';
+import { FlatList, Text } from 'react-native';
+import { HStack } from '@/components/ui/hstack';
+import { Heading } from '@/components/ui/heading';
 
 export default function Home() {
     const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
@@ -27,6 +29,17 @@ export default function Home() {
                 contentContainerStyle={{ paddingHorizontal: 32 }}
                 style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
             />
+
+            <VStack className='px-8'>
+                <HStack className='justify-between mb-5 items-center'>
+                    <Heading className='text-colors-gray200 text-base'>
+                        Exercícios
+                    </Heading>
+                    <Text className='text-colors-gray200 text-sm font-body'>
+                        4
+                    </Text>
+                </HStack>
+            </VStack>
         </VStack>
     )
 }
