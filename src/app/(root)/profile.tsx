@@ -9,16 +9,20 @@ import { UserPhoto } from '@/components/user-photo';
 import { Input } from '@/components/input';
 import { Heading } from '@/components/ui/heading';
 import { Button } from '@/components/button';
+import { useToast } from '@/components/ui/toast'
 
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { ToastMessage } from '@/components/toast-message';
+;
 
 
 export default function Profile() {
     const [userPhoto, setUserPhoto] = useState(
         'https://github.com/matheustorresdev97.png',
     )
+
+    const toast = useToast()
 
     async function handleUserPhotoSelect() {
         try {
@@ -40,9 +44,17 @@ export default function Profile() {
                 }
 
                 if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
-                    return Alert.alert(
-                        'Essa imagem é muito grande. Escolha uma de até 5MB',
-                    )
+                    return toast.show({
+                        placement: 'top',
+                        render: ({ id }) => (
+                            <ToastMessage
+                                id={id}
+                                action="error"
+                                title="Essa imagem é muito grande. Escolha uma de até 5MB"
+                                onClose={() => toast.close(id)}
+                            />
+                        ),
+                    })
                 }
 
                 setUserPhoto(photoSelected.assets[0].uri)
@@ -55,14 +67,6 @@ export default function Profile() {
     return (
         <VStack className="flex-1 bg-colors-gray700">
             <ScreenHeader title="Perfil" />
-
-            <ToastMessage
-                id="1"
-                title="Mensagem de exemplo"
-                description="asdasdakjsd asdajksdbasjdhasd"
-                action="success"
-                onClose={() => { }}
-            />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
                 <Center className='mt-6 px-10'>
