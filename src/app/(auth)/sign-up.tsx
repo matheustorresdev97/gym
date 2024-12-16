@@ -14,15 +14,27 @@ import Logo from '@/assets/logo.svg';
 
 import { Controller, useForm } from 'react-hook-form'
 
+type FormDataProps = {
+    name: string
+    email: string
+    password: string
+    password_confirm: string
+}
+
 export default function SignUp() {
-    const { control, handleSubmit } = useForm()
+    const { control, handleSubmit } = useForm<FormDataProps>()
 
     function handleGoBack() {
         router.back()
     }
 
-    function handleSignUp(data: any) {
-        console.log(data)
+    function handleSignUp({
+        name,
+        email,
+        password,
+        password_confirm,
+    }: FormDataProps) {
+        console.log({ name, email, password, password_confirm })
     }
 
     return (
@@ -51,6 +63,9 @@ export default function SignUp() {
                         <Controller
                             control={control}
                             name="name"
+                            rules={{
+                                required: 'Informe o nome',
+                            }}
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="Nome"
