@@ -1,13 +1,14 @@
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Image, Text } from 'react-native';
+import { Alert, Image, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 
 import { Center } from '@/components/ui/center';
 import { VStack } from '@/components/ui/vstack';
 import { Heading } from '@/components/ui/heading';
+import { useToast } from '@/components/ui/toast';
 
 import { Input } from '@/components/input';
 import { Button } from '@/components/button';
@@ -15,6 +16,8 @@ import { Button } from '@/components/button';
 import Logo from '@/assets/logo.svg';
 
 import { api } from '@/services/api';
+import { AppError } from '@/utils/AppError';
+import { ToastMessage } from '@/components/toast-message';
 
 
 const signUpSchema = z
@@ -37,6 +40,9 @@ const signUpSchema = z
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
+
+    const toast = useToast();
+
     const {
         control,
         handleSubmit,
@@ -50,9 +56,30 @@ export default function SignUp() {
     }
 
     async function handleSignUp({ name, email, password }: SignUpFormData) {
-        const response = await api.post('/users', { name, email, password });
-        console.log(response.data);
+        try {
+            const response = await api.post('/users', { name, email, password });
+            console.log(response.data);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            const title = isAppError
+                ? error.message
+                : 'Não foi possível criar a conta. Tente novamente mais tarde';
+
+            return toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="error"
+                        title={title}
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        }
     }
+
 
     return (
         <ScrollView
