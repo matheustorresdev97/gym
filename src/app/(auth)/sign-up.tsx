@@ -1,44 +1,55 @@
-import { useState } from 'react'
-import { Image, Text } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { router } from "expo-router";
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Image, Text } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
 
-import { Center } from "@/components/ui/center";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
+import { Center } from '@/components/ui/center';
+import { VStack } from '@/components/ui/vstack';
+import { Heading } from '@/components/ui/heading';
 
-import { Input } from "@/components/input";
-import { Button } from "@/components/button";
+import { Input } from '@/components/input';
+import { Button } from '@/components/button';
 
 import Logo from '@/assets/logo.svg';
 
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form';
 
-type FormDataProps = {
-    name: string
-    email: string
-    password: string
-    password_confirm: string
-}
+
+const signUpSchema = z
+    .object({
+        name: z.string().nonempty('Informe o nome'),
+        email: z.string().nonempty('Informe o e-mail').email('E-mail inválido'),
+        password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+        password_confirm: z.string().nonempty('Confirme a senha'),
+    })
+    .superRefine(({ password, password_confirm }, ctx) => {
+        if (password !== password_confirm) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['password_confirm'],
+                message: 'As senhas não coincidem',
+            });
+        }
+    });
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
     const {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormDataProps>()
+    } = useForm<SignUpFormData>({
+        resolver: zodResolver(signUpSchema),
+    });
 
     function handleGoBack() {
         router.back()
     }
 
-    function handleSignUp({
-        name,
-        email,
-        password,
-        password_confirm,
-    }: FormDataProps) {
-        console.log({ name, email, password, password_confirm })
+    function handleSignUp(data: SignUpFormData) {
+        console.log(data);
     }
 
     return (
@@ -67,9 +78,6 @@ export default function SignUp() {
                         <Controller
                             control={control}
                             name="name"
-                            rules={{
-                                required: 'Informe o nome',
-                            }}
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="Nome"
@@ -84,13 +92,6 @@ export default function SignUp() {
                         <Controller
                             control={control}
                             name="email"
-                            rules={{
-                                required: 'Informe o e-mail',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'E-mail inválido',
-                                },
-                            }}
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="E-mail"
@@ -113,6 +114,7 @@ export default function SignUp() {
                                     secureTextEntry
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.password?.message}
                                 />
                             )}
                         />
@@ -128,6 +130,7 @@ export default function SignUp() {
                                     value={value}
                                     onSubmitEditing={handleSubmit(handleSignUp)}
                                     returnKeyType="send"
+                                    errorMessage={errors.password_confirm?.message}
                                 />
                             )}
                         />
