@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Image, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -13,9 +14,22 @@ import Logo from '@/assets/logo.svg';
 import { router } from "expo-router";
 
 export default function SignUp() {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [passwordConfirm, setPasswordConfirm] = useState('')
 
     function handleGoBack() {
         router.back()
+    }
+
+    function handleSignUp() {
+        console.log({
+            name,
+            email,
+            password,
+            passwordConfirm,
+        })
     }
 
     return (
@@ -41,17 +55,28 @@ export default function SignUp() {
                     <Center className="flex-1 gap-2">
                         <Heading className="text-colors-gray100">Crie sua conta</Heading>
 
-                        <Input placeholder="Nome" />
+                        <Input placeholder="Nome" onChangeText={setName} />
 
                         <Input
                             placeholder="E-mail"
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            onChangeText={setEmail}
                         />
 
-                        <Input placeholder="Senha" secureTextEntry />
+                        <Input
+                            placeholder="Senha"
+                            secureTextEntry
+                            onChangeText={setPassword}
+                        />
 
-                        <Button title="Criar e acessar" />
+                        <Input
+                            placeholder="Confirme a Senha"
+                            secureTextEntry
+                            onChangeText={setPasswordConfirm}
+                        />
+
+                        <Button title="Criar e acessar" onPress={handleSignUp} />
                     </Center>
 
 
