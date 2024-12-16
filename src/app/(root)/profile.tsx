@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ScrollView, Text, TouchableOpacity } from 'react-native'
 
 import { VStack } from "@/components/ui/vstack";
@@ -9,8 +10,29 @@ import { Input } from '@/components/input';
 import { Heading } from '@/components/ui/heading';
 import { Button } from '@/components/button';
 
+import * as ImagePicker from 'expo-image-picker'
+
 
 export default function Profile() {
+    const [userPhoto, setUserPhoto] = useState(
+        'https://github.com/matheustorresdev97.png',
+    )
+
+    async function handleUserPhotoSelect() {
+        const photoSelected = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (photoSelected.canceled) {
+            return
+        }
+
+        setUserPhoto(photoSelected.assets[0].uri)
+    }
+
     return (
         <VStack className="flex-1 bg-colors-gray700">
             <ScreenHeader title="Perfil" />
@@ -18,12 +40,12 @@ export default function Profile() {
             <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
                 <Center className='mt-6 px-10'>
                     <UserPhoto
-                        source={{ uri: 'https://github.com/matheustorresdev97.png' }}
+                        source={{ uri: userPhoto }}
                         alt="Imagem do usuário"
                         height={64}
                         width={64}
                     />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleUserPhotoSelect}>
                         <Text
                             className='text-colors-green500 font-heading text-base mt-2 mb-8'
                         >
