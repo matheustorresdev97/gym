@@ -12,6 +12,7 @@ import { Button } from '@/components/button';
 
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
+import { ToastMessage } from '@/components/toast-message';
 
 
 export default function Profile() {
@@ -54,6 +55,14 @@ export default function Profile() {
     return (
         <VStack className="flex-1 bg-colors-gray700">
             <ScreenHeader title="Perfil" />
+
+            <ToastMessage
+                id="1"
+                title="Mensagem de exemplo"
+                description="asdasdakjsd asdajksdbasjdhasd"
+                action="success"
+                onClose={() => { }}
+            />
 
             <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
                 <Center className='mt-6 px-10'>
