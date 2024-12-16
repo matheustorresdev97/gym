@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,7 +14,7 @@ import { Button } from '@/components/button';
 
 import Logo from '@/assets/logo.svg';
 
-import { Controller, useForm } from 'react-hook-form';
+import { api } from '@/services/api';
 
 
 const signUpSchema = z
@@ -48,8 +49,9 @@ export default function SignUp() {
         router.back()
     }
 
-    function handleSignUp(data: SignUpFormData) {
-        console.log(data);
+    async function handleSignUp({ name, email, password }: SignUpFormData) {
+        const response = await api.post('/users', { name, email, password });
+        console.log(response.data);
     }
 
     return (
