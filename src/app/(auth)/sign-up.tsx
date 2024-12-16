@@ -22,7 +22,11 @@ type FormDataProps = {
 }
 
 export default function SignUp() {
-    const { control, handleSubmit } = useForm<FormDataProps>()
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormDataProps>()
 
     function handleGoBack() {
         router.back()
@@ -71,13 +75,22 @@ export default function SignUp() {
                                     placeholder="Nome"
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.name?.message}
                                 />
                             )}
                         />
 
+
                         <Controller
                             control={control}
                             name="email"
+                            rules={{
+                                required: 'Informe o e-mail',
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: 'E-mail inválido',
+                                },
+                            }}
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="E-mail"
@@ -85,9 +98,11 @@ export default function SignUp() {
                                     autoCapitalize="none"
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.email?.message}
                                 />
                             )}
                         />
+
 
                         <Controller
                             control={control}
