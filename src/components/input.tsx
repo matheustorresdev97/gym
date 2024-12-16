@@ -22,11 +22,14 @@ export function Input({
     const invalid = !!errorMessage || isInvalid
 
     return (
-        <FormControl className='mb-4 w-full' isInvalid={invalid}>
+        <FormControl className="mb-4 w-full" isInvalid={invalid}>
             <GluestackInput
+                isInvalid={isInvalid}
                 className={clsx(
-                    "h-14 border border-transparent rounded-md data-[focus=true]:border-colors-green500",
+                    "h-14 border rounded-md",
                     {
+                        "border-colors-red500": invalid,
+                        "data-[focus=true]:border-colors-green500": !invalid,
                         "opacity-50": isReadOnly,
                         "opacity-100": !isReadOnly
                     },
@@ -43,7 +46,7 @@ export function Input({
             </GluestackInput>
 
             <FormControlError>
-                <FormControlErrorText className='text-colors-red500'>
+                <FormControlErrorText className="text-colors-red500">
                     {errorMessage}
                 </FormControlErrorText>
             </FormControlError>
