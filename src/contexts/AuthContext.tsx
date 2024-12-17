@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { storageUserGet, storageUserSave } from "@/storage/storageUser";
+import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 export type UserProps = {
@@ -14,6 +14,7 @@ export type AuthContextDataProps = {
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     singIn: (email: string, password: string) => Promise<void>;
+    signOut: () => Promise<void>;
     isLoadingUserStorageData: boolean;
 }
 
@@ -43,6 +44,18 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         }
     }
 
+    async function signOut() {
+        try {
+            setIsLoadingUserStorageData(true);
+            setUser({} as UserProps);
+            await storageUserRemove();
+        } catch (error) {
+            throw error;
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
     async function loadUserData() {
         try {
             const userLogged = await storageUserGet();
@@ -61,7 +74,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, singIn, isLoading, setIsLoading, isLoadingUserStorageData }}>
+        <AuthContext.Provider value={{ user, singIn, signOut, isLoading, setIsLoading, isLoadingUserStorageData }}>
             {children}
         </AuthContext.Provider>
     )

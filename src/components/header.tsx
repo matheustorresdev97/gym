@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
 import { Heading } from "@/components/ui/heading";
@@ -8,16 +8,16 @@ import { colors } from "@/styles/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserPhoto } from "./user-photo";
 
-import defaulUserPhotoImg from '@/assets/userPhotoDefault.png'; 
+import defaulUserPhotoImg from '@/assets/userPhotoDefault.png';
 
 export function Header() {
 
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
 
     return (
         <HStack className="bg-colors-gray600 pt-16 pb-5 px-8 items-center">
             <UserPhoto
-            className="mr-4"
+                className="mr-4"
                 source={user.avatar ? { uri: user.avatar } : defaulUserPhotoImg}
                 height={16}
                 width={16}
@@ -31,11 +31,13 @@ export function Header() {
                     {user.name}
                 </Heading>
             </VStack>
-            <MaterialIcons
-                name="logout"
-                size={24}
-                color={colors.gray200}
-            />
+            <TouchableOpacity onPress={signOut}>
+                <MaterialIcons
+                    name="logout"
+                    size={24}
+                    color={colors.gray200}
+                />
+            </TouchableOpacity>
         </HStack>
     )
 }
