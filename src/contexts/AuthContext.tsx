@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { storageAuthTokenSave } from "@/storage/storageAuthToken";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { router } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -32,18 +33,40 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
 
+    async function userAndTokenUpdate(userData: UserProps, token: string) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        setUser(userData);
+    }
+
+    async function storageUserAndTokenSave(userData: UserProps, token: string) {
+        try {
+            setIsLoadingUserStorageData(true);
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            await storageUserSave(userData);
+            await storageAuthTokenSave(token);
+
+        } catch (error) {
+            throw error
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
     async function singIn(email: string, password: string) {
         try {
             const { data } = await api.post('/sessions', { email, password });
 
             if (data.user && data.token) {
-                setUser(data.user);
-                storageUserSave(data.user)
+                await storageUserAndTokenSave(data.user, data.token);
+                userAndTokenUpdate(data.user, data.token)
 
                 router.navigate('/(root)/home');
             }
         } catch (error) {
             throw error
+        } finally {
+            setIsLoadingUserStorageData(false);
         }
     }
 
