@@ -10,6 +10,8 @@ export type UserProps = {
 
 export type AuthContextDataProps = {
     user: UserProps;
+    isLoading: boolean;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     singIn: (email: string, password: string) => Promise<void>;
 }
 
@@ -23,6 +25,7 @@ export const AuthContext = createContext<AuthContextDataProps>({} as AuthContext
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     const [user, setUser] = useState<UserProps>({} as UserProps)
+    const [isLoading, setIsLoading] = useState(false)
 
     async function singIn(email: string, password: string) {
         try {
@@ -37,7 +40,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, singIn }}>
+        <AuthContext.Provider value={{ user, singIn, isLoading, setIsLoading }}>
             {children}
         </AuthContext.Provider>
     )

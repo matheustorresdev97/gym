@@ -24,7 +24,7 @@ import { ToastMessage } from "@/components/toast-message";
 
 
 export default function SignIn() {
-    const { singIn } = useAuth();
+    const { singIn, setIsLoading, isLoading } = useAuth();
 
     const toast = useToast();
 
@@ -36,6 +36,7 @@ export default function SignIn() {
 
     async function handleSignIn({ email, password }: FormData) {
         try {
+            setIsLoading(true);
             await singIn(email, password);
         } catch (error) {
             const isAppError = error instanceof AppError;
@@ -53,6 +54,7 @@ export default function SignIn() {
                     />
                 ),
             })
+            setIsLoading(false);
         }
     }
 
@@ -107,7 +109,11 @@ export default function SignIn() {
                                 />
                             )} />
 
-                        <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+                        <Button
+                            title="Acessar"
+                            onPress={handleSubmit(handleSignIn)}
+                            isLoading={isLoading}
+                        />
                     </Center>
 
                     <Center className="flex-1 justify-end mt-4">
