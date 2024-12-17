@@ -38,10 +38,6 @@ export default function SignIn() {
         try {
             setIsLoading(true);
             await singIn(email, password);
-
-            if (user.id) {
-                router.navigate('/(root)/home');
-            }
         } catch (error) {
             const isAppError = error instanceof AppError;
 

@@ -1,5 +1,6 @@
 import { api } from "@/services/api";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
+import { router } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 export type UserProps = {
@@ -35,9 +36,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         try {
             const { data } = await api.post('/sessions', { email, password });
 
-            if (data.user) {
+            if (data.user && data.token) {
                 setUser(data.user);
                 storageUserSave(data.user)
+
+                router.navigate('/(root)/home');
             }
         } catch (error) {
             throw error

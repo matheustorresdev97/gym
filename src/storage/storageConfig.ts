@@ -1,2 +1,4 @@
 const USER_STORAGE = '@gym:user';
-export { USER_STORAGE }
+const AUTH_STORAGE = '@gym:token';
+
+export { USER_STORAGE, AUTH_STORAGE };
