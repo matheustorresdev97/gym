@@ -18,6 +18,7 @@ import Logo from '@/assets/logo.svg';
 import { api } from '@/services/api';
 import { AppError } from '@/utils/AppError';
 import { ToastMessage } from '@/components/toast-message';
+import { useAuth } from '@/contexts/AuthContext';
 
 
 const signUpSchema = z
@@ -42,6 +43,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 export default function SignUp() {
 
     const toast = useToast();
+    const { singIn, isLoading, setIsLoading } = useAuth();
 
     const {
         control,
@@ -57,9 +59,11 @@ export default function SignUp() {
 
     async function handleSignUp({ name, email, password }: SignUpFormData) {
         try {
-            const response = await api.post('/users', { name, email, password });
-            console.log(response.data);
+            setIsLoading(true)
+            await api.post('/users', { name, email, password });
+            await singIn(email, password)
         } catch (error) {
+            setIsLoading(false);
             const isAppError = error instanceof AppError;
 
             const title = isAppError
@@ -168,6 +172,7 @@ export default function SignUp() {
                         <Button
                             title="Criar e acessar"
                             onPress={handleSubmit(handleSignUp)}
+                            isLoading={isLoading}
                         />
                     </Center>
 
