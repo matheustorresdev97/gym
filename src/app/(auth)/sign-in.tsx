@@ -24,7 +24,7 @@ import { ToastMessage } from "@/components/toast-message";
 
 
 export default function SignIn() {
-    const { singIn, setIsLoading, isLoading } = useAuth();
+    const { singIn, setIsLoading, isLoading, user } = useAuth();
 
     const toast = useToast();
 
@@ -38,6 +38,10 @@ export default function SignIn() {
         try {
             setIsLoading(true);
             await singIn(email, password);
+
+            if (user.id) {
+                router.navigate('/(root)/home');
+            }
         } catch (error) {
             const isAppError = error instanceof AppError;
 
