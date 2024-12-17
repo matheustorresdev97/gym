@@ -10,6 +10,7 @@ import {
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
 
 import { Loading } from "@/components/loading"
+import { AuthContextProvider } from "@/contexts/AuthContext"
 
 
 export default function RootLayout() {
@@ -21,18 +22,20 @@ export default function RootLayout() {
 
     return (
         <GestureHandlerRootView className="flex-1">
-            <GluestackUIProvider>
-                <StatusBar
-                    barStyle="light-content"
-                    backgroundColor="transparent"
-                    translucent
-                />
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                />
-            </GluestackUIProvider>
+            <AuthContextProvider>
+                <GluestackUIProvider>
+                    <StatusBar
+                        barStyle="light-content"
+                        backgroundColor="transparent"
+                        translucent
+                    />
+                    <Stack
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                    />
+                </GluestackUIProvider>
+            </AuthContextProvider>
         </GestureHandlerRootView>
     )
 }
