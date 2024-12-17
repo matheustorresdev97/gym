@@ -6,8 +6,16 @@ import ProfileSvg from '@/assets/profile.svg'
 
 import { Platform } from "react-native";
 import { colors } from "@/styles/colors";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loading } from "@/components/loading";
 
 export default function RootLayout() {
+
+    const { isLoadingUserStorageData } = useAuth();
+
+    if (isLoadingUserStorageData) {
+        return <Loading />
+    }
 
     return (
         <Tabs screenOptions={{

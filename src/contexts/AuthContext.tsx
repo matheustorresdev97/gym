@@ -14,6 +14,7 @@ export type AuthContextDataProps = {
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     singIn: (email: string, password: string) => Promise<void>;
+    isLoadingUserStorageData: boolean;
 }
 
 type AuthContextProviderProps = {
@@ -27,6 +28,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     const [user, setUser] = useState<UserProps>({} as UserProps)
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
 
     async function singIn(email: string, password: string) {
         try {
@@ -42,9 +44,16 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }
 
     async function loadUserData() {
-        const userLogged = await storageUserGet();
-        if (userLogged) {
-            setUser(userLogged)
+        try {
+            const userLogged = await storageUserGet();
+
+            if (userLogged) {
+                setUser(userLogged);
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            setIsLoadingUserStorageData(false);
         }
     }
     useEffect(() => {
@@ -52,7 +61,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, singIn, isLoading, setIsLoading }}>
+        <AuthContext.Provider value={{ user, singIn, isLoading, setIsLoading, isLoadingUserStorageData }}>
             {children}
         </AuthContext.Provider>
     )
