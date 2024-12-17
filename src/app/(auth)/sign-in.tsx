@@ -1,5 +1,7 @@
 import { Image, Text } from "react-native";
+import { router } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
+import { Controller, useForm } from 'react-hook-form';
 
 import { Center } from "@/components/ui/center";
 import { VStack } from "@/components/ui/vstack";
@@ -8,15 +10,27 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 
+type FormData = {
+    email: string;
+    password: string;
+}
 
 import Logo from '@/assets/logo.svg';
-import { router } from "expo-router";
+
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function SignIn() {
+    const { singIn } = useAuth();
+
+    const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
 
     function handleNewAccount() {
         router.navigate('/(auth)/sign-up');
+    }
+
+    function handleSignIn({ email, password }: FormData) {
+        singIn(email, password);
     }
 
     return (
@@ -42,15 +56,35 @@ export default function SignIn() {
 
                     <Center className="gap-2">
                         <Heading className="text-colors-gray100">Acesse sua conta</Heading>
-                        <Input
-                            placeholder="E-mail"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
+                        <Controller
+                            control={control}
+                            name="email"
+                            rules={{ required: 'Informe o e-mail' }}
+                            render={({ field: { onChange } }) => (
+                                <Input
+                                    placeholder="E-mail"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    onChangeText={onChange}
+                                    errorMessage={errors.email?.message}
+                                />
+                            )}
                         />
 
-                        <Input placeholder="Senha" secureTextEntry />
+                        <Controller
+                            control={control}
+                            name="password"
+                            rules={{ required: 'Informe a senha' }}
+                            render={({ field: { onChange } }) => (
+                                <Input
+                                    placeholder="Senha"
+                                    secureTextEntry
+                                    onChangeText={onChange}
+                                    errorMessage={errors.password?.message}
+                                />
+                            )} />
 
-                        <Button title="Acessar" />
+                        <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
                     </Center>
 
                     <Center className="flex-1 justify-end mt-4">
