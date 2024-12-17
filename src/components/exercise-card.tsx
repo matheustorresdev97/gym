@@ -5,17 +5,19 @@ import { Heading } from './ui/heading'
 
 import Entypo from '@expo/vector-icons/Entypo';
 import { colors } from '@/styles/colors';
+import { ExerciseProps } from '@/app/(root)/home';
+import { api } from '@/services/api';
 
-type Props = TouchableOpacityProps & {}
+type Props = TouchableOpacityProps & {
+    data: ExerciseProps;
+}
 
-export function ExerciseCard({ ...props }: Props) {
+export function ExerciseCard({ data, ...props }: Props) {
     return (
         <TouchableOpacity {...props}>
             <HStack className='bg-colors-gray500 items-center p-2 pr-4 rounded-md mb-3'>
                 <Image
-                    source={{
-                        uri: 'https://static.wixstatic.com/media/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp/v1/fill/w_350,h_375,al_c/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp',
-                    }}
+                     source={{ uri: `${api.defaults.baseURL}/exercise/thumb/${data.thumb}` }}
                     alt="Imagem do exercício"
                     className='w-16 h-16 rounded-md mr-4'
                     resizeMode="cover"
@@ -23,10 +25,10 @@ export function ExerciseCard({ ...props }: Props) {
 
                 <VStack className='flex-1'>
                     <Heading className='text-lg text-white font-heading'>
-                        Puxada frontal
+                        {data.name}
                     </Heading>
                     <Text className='text-sm text-colors-gray200 mt-1' numberOfLines={2}>
-                        3 séries x 12 repetições
+                        {data.series} séries x {data.repetitions} repetições
                     </Text>
                 </VStack>
                 <Entypo name="chevron-right" size={24} color={colors.gray300} />
