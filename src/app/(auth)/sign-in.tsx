@@ -18,10 +18,15 @@ type FormData = {
 import Logo from '@/assets/logo.svg';
 
 import { useAuth } from "@/contexts/AuthContext";
+import { AppError } from "@/utils/AppError";
+import { useToast } from "@/components/ui/toast";
+import { ToastMessage } from "@/components/toast-message";
 
 
 export default function SignIn() {
     const { singIn } = useAuth();
+
+    const toast = useToast();
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
 
@@ -29,8 +34,26 @@ export default function SignIn() {
         router.navigate('/(auth)/sign-up');
     }
 
-    async function handleSignIn({ email, password }: FormData){
-        await singIn(email, password);
+    async function handleSignIn({ email, password }: FormData) {
+        try {
+            await singIn(email, password);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.'
+
+            toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="error"
+                        title={title}
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        }
     }
 
     return (
