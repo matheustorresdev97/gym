@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { storageAuthTokenSave } from "@/storage/storageAuthToken";
+import { storageAuthTokenRemove, storageAuthTokenSave } from "@/storage/storageAuthToken";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { router } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -67,6 +67,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             throw error
         } finally {
             setIsLoadingUserStorageData(false);
+            setIsLoading(false);
         }
     }
 
@@ -75,6 +76,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             setIsLoadingUserStorageData(true);
             setUser({} as UserProps);
             await storageUserRemove();
+            await storageAuthTokenRemove();
+            router.navigate('/(auth)/sign-in');
         } catch (error) {
             throw error;
         } finally {
