@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FlatList, Text } from 'react-native';
 
 import { VStack } from "@/components/ui/vstack";
@@ -9,6 +9,10 @@ import { Group } from "@/components/group";
 import { Header } from "@/components/header";
 import { ExerciseCard } from '@/components/exercise-card';
 import { router } from 'expo-router';
+import { api } from '@/services/api';
+import { AppError } from '@/utils/AppError';
+import { useToast } from '@/components/ui/toast';
+import { ToastMessage } from '@/components/toast-message';
 
 export default function Home() {
     const [exercises, setExercises] = useState([
@@ -20,12 +24,38 @@ export default function Home() {
         'Levantamento terra',
         'Levantamento terra',
     ])
-    const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
+    const [groups, setGroups] = useState<string[]>([]);
     const [groupSelected, setGroupSelected] = useState('costas')
+
+    const toast = useToast();
 
     function handleOpenExerciseDetails() {
         router.navigate('/exercise')
     }
+
+    async function fetchGroups() {
+        try {
+            const response = await api.get('/groups');
+            setGroups(response.data);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível carregar os grupos musculares';
+            toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="error"
+                        title={title}
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        }
+    }
+    useEffect(() => {
+        fetchGroups();
+    }, [])
 
     return (
         <VStack className="flex-1 bg-colors-gray700">
