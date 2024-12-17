@@ -1,3 +1,4 @@
+import { api } from "@/services/api";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export type UserProps = {
@@ -9,7 +10,7 @@ export type UserProps = {
 
 export type AuthContextDataProps = {
     user: UserProps;
-    singIn: (email: string, password: string) => void;
+    singIn: (email: string, password: string) => Promise<void>;
 }
 
 type AuthContextProviderProps = {
@@ -21,20 +22,18 @@ export const AuthContext = createContext<AuthContextDataProps>({} as AuthContext
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
-    const [user, setUser] = useState({
-        id: '1',
-        name: 'Matheus',
-        email: 'matheus@email.com',
-        avatar: 'matheus.png'
-    })
+    const [user, setUser] = useState<UserProps>({} as UserProps)
 
-    function singIn(email: string, password: string) {
-        setUser({
-            id: '',
-            name: '',
-            email,
-            avatar: '',
-        })
+    async function singIn(email: string, password: string) {
+        try {
+            const { data } = await api.post('/sessions', { email, password });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        } catch (error) {
+            throw error
+        }
     }
 
     return (
