@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { storageAuthTokenRemove, storageAuthTokenSave } from "@/storage/storageAuthToken";
+import { storageAuthTokenGet, storageAuthTokenRemove, storageAuthTokenSave } from "@/storage/storageAuthToken";
 import { storageUserGet, storageUserRemove, storageUserSave } from "@/storage/storageUser";
 import { router } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -40,12 +40,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         setUser(userData);
     }
 
-    async function storageUserAndTokenSave(userData: UserProps, token: string) {
+    async function storageUserAndTokenSave(userData: UserProps, token: string, refresh_token: string) {
         try {
             setIsLoadingUserStorageData(true);
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             await storageUserSave(userData);
-            await storageAuthTokenSave(token);
+            await storageAuthTokenSave({ token, refresh_token });
 
         } catch (error) {
             throw error
@@ -58,8 +57,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         try {
             const { data } = await api.post('/sessions', { email, password });
 
-            if (data.user && data.token) {
-                await storageUserAndTokenSave(data.user, data.token);
+            if(data.user && data.token && data.refresh_token) {
+                await storageUserAndTokenSave(data.user, data.token, data.refresh_token);
                 userAndTokenUpdate(data.user, data.token)
 
                 router.navigate('/(root)/home');
@@ -97,11 +96,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     async function loadUserData() {
         try {
+            setIsLoadingUserStorageData(true);
             const userLogged = await storageUserGet();
+            const { token } = await storageAuthTokenGet();
 
-            if (userLogged) {
-                setUser(userLogged);
-            }
+            if(token && userLogged) {
+                userAndTokenUpdate(userLogged, token);
+              } 
         } catch (error) {
             throw error
         } finally {
@@ -111,6 +112,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     useEffect(() => {
         loadUserData()
     }, [])
+
+    useEffect(() => {
+        const subscribe = api.registerInterceptTokenManager(signOut);
+        return () => {
+          subscribe();
+        }
+      },[])
 
     return (
         <AuthContext.Provider value={{ user, singIn, updateUserProfile, signOut, isLoading, setIsLoading, isLoadingUserStorageData }}>
