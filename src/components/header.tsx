@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserPhoto } from "./user-photo";
 
 import defaulUserPhotoImg from '@/assets/userPhotoDefault.png';
+import { api } from "@/services/api";
 
 export function Header() {
 
@@ -18,7 +19,11 @@ export function Header() {
         <HStack className="bg-colors-gray600 pt-16 pb-5 px-8 items-center">
             <UserPhoto
                 className="mr-4"
-                source={user.avatar ? { uri: user.avatar } : defaulUserPhotoImg}
+                source={
+                    user.avatar  
+                    ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+                    : defaulUserPhotoImg
+                  }
                 height={16}
                 width={16}
                 alt="Imagem do usuário"

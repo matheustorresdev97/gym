@@ -24,6 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { colors } from '@/styles/colors';
 
 
+import defaulUserPhotoImg from '@/assets/userPhotoDefault.png';
 
 type FormDataProps = {
     name: string;
@@ -81,6 +82,7 @@ export default function Profile() {
             }
 
             const photoUri = photoSelected.assets[0].uri
+
             if (photoUri) {
                 const photoInfo = (await FileSystem.getInfoAsync(photoUri)) as {
                     size: number
@@ -100,7 +102,37 @@ export default function Profile() {
                     })
                 }
 
-                setUserPhoto(photoSelected.assets[0].uri)
+                const fileExtension = photoSelected.assets[0].uri.split('.').pop();
+
+                const photoFile = {
+                    name: `${user.name}.${fileExtension}`.toLowerCase(),
+                    uri: photoSelected.assets[0].uri,
+                    type: `${photoSelected.assets[0].type}/${fileExtension}`
+                } as any;
+
+                const userPhotoUploadForm = new FormData();
+                userPhotoUploadForm.append('avatar', photoFile);
+                const avatarUpdtedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                const userUpdated = user;
+                userUpdated.avatar = avatarUpdtedResponse.data.avatar;
+                await updateUserProfile(userUpdated);
+
+                toast.show({
+                    placement: 'top',
+                    render: ({ id }) => (
+                        <ToastMessage
+                            id={id}
+                            action="success"
+                            title="Perfil atualizado com sucesso!"
+                            onClose={() => toast.close(id)}
+                        />
+                    ),
+                })
             }
         } catch (error) {
             console.log(error)
@@ -120,7 +152,7 @@ export default function Profile() {
 
             await updateUserProfile(userUpdated);
 
-            return toast.show({
+            toast.show({
                 placement: 'top',
                 render: ({ id }) => (
                     <ToastMessage
@@ -164,7 +196,11 @@ export default function Profile() {
                             />
                             :
                             <UserPhoto
-                                source={{ uri: userPhoto }}
+                                source={
+                                    user.avatar
+                                        ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                                        : defaulUserPhotoImg
+                                }
                                 alt="Imagem do usuário"
                                 height={64}
                                 width={64}
