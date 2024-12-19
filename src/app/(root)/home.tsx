@@ -34,7 +34,7 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [exercises, setExercises] = useState<ExerciseProps[]>([]);
     const [groups, setGroups] = useState<string[]>([]);
-    const [groupSelected, setGroupSelected] = useState('costas')
+    const [groupSelected, setGroupSelected] = useState('antebraço');
 
     const toast = useToast();
 

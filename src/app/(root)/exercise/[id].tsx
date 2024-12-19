@@ -24,6 +24,7 @@ import { ToastMessage } from "@/components/toast-message";
 import { Loading } from "@/components/loading";
 
 export default function Exercise() {
+    const [sendingRegister, setSendingRegister] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [exercise, setExercise] = useState<ExerciseProps>({} as ExerciseProps);
     const params = useLocalSearchParams<{ id: string }>()
@@ -56,6 +57,43 @@ export default function Exercise() {
             setIsLoading(false);
         }
     }
+
+    async function handleExerciseHistoryRegister() {
+        try {
+            setSendingRegister(true);
+
+            await api.post('/history', { exercise_id: params.id });
+            toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="success"
+                        title='Parabéns! Exercício registrado no seu histórico.'
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+            router.navigate('/history');
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível registrar exercício.';
+            toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="error"
+                        title={title}
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        } finally {
+            setSendingRegister(false);
+        }
+    }
+
     useEffect(() => {
         fetchExerciseDetails();
     }, [params.id])
@@ -115,7 +153,10 @@ export default function Exercise() {
                                     </Text>
                                 </HStack>
                             </HStack>
-                            <Button title="Marcar como realizado" />
+                            <Button title="Marcar como realizado"
+                                isLoading={sendingRegister}
+                                onPress={handleExerciseHistoryRegister}
+                            />
                         </Box>
                     </VStack>
                 }
