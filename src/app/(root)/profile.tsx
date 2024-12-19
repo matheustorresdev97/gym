@@ -18,6 +18,12 @@ import { ToastMessage } from '@/components/toast-message';
 import { useAuth } from '@/contexts/AuthContext';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { api } from '@/services/api';
+import { AppError } from '@/utils/AppError';
+import { Skeleton } from '@/components/ui/skeleton';
+import { colors } from '@/styles/colors';
+
+
 
 type FormDataProps = {
     name: string;
@@ -43,12 +49,14 @@ const profileSchema = z.object({
 
 
 export default function Profile() {
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [photoIsLoading, setPhotoIsLoading] = useState(false);
     const [userPhoto, setUserPhoto] = useState(
         'https://github.com/matheustorresdev97.png',
     )
 
     const toast = useToast()
-    const { user } = useAuth();
+    const { user, updateUserProfile } = useAuth();
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         defaultValues: {
             name: user.name,
@@ -58,7 +66,9 @@ export default function Profile() {
     });
 
     async function handleUserPhotoSelect() {
+        setPhotoIsLoading(true)
         try {
+
             const photoSelected = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ['images'],
                 allowsEditing: true,
@@ -94,11 +104,50 @@ export default function Profile() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setPhotoIsLoading(false)
         }
     }
 
     async function handleProfileUpdate(data: FormDataProps) {
-        console.log(data);
+        try {
+            setIsUpdating(true);
+
+            const userUpdated = user;
+            userUpdated.name = data.name;
+
+            await api.put('/users', data);
+
+            await updateUserProfile(userUpdated);
+
+            return toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="success"
+                        title="Perfil atualizado com sucesso!"
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível atualizar os dados. Tente novamente mais tarde.';
+            return toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        action="error"
+                        title={title}
+                        onClose={() => toast.close(id)}
+                    />
+                ),
+            })
+        } finally {
+            setIsUpdating(false);
+        }
     }
 
     return (
@@ -107,13 +156,21 @@ export default function Profile() {
 
             <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
                 <Center className='mt-6 px-10'>
-                    <UserPhoto
-                        source={{ uri: userPhoto }}
-                        alt="Imagem do usuário"
-                        height={64}
-                        width={64}
-                    />
-                    <TouchableOpacity onPress={handleUserPhotoSelect}>
+                    {
+                        photoIsLoading ?
+                            <Skeleton
+                                className='w-[33px] rounded-full h-[33px]'
+                                startColor={colors.gray500}
+                            />
+                            :
+                            <UserPhoto
+                                source={{ uri: userPhoto }}
+                                alt="Imagem do usuário"
+                                height={64}
+                                width={64}
+                            />
+                    }
+                    <TouchableOpacity onPress={handleUserPhotoSelect} >
                         <Text
                             className='text-colors-green500 font-heading text-base mt-2 mb-8'
                         >
@@ -199,6 +256,7 @@ export default function Profile() {
                             title="Atualizar"
                             className='mt-4'
                             onPress={handleSubmit(handleProfileUpdate)}
+                            isLoading={isUpdating}
                         />
                     </Center>
                 </Center>
