@@ -16,6 +16,8 @@ import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { ToastMessage } from '@/components/toast-message';
 import { useAuth } from '@/contexts/AuthContext';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormDataProps = {
     name: string;
@@ -25,6 +27,20 @@ type FormDataProps = {
     confirm_password: string;
 }
 
+const profileSchema = z.object({
+    name: z.string().nonempty('Informe o nome'),
+    password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+    password_confirm: z.string().nonempty('Confirme a senha'),
+}).superRefine(({ password, password_confirm }, ctx) => {
+    if (password !== password_confirm) {
+        ctx.addIssue({
+            code: 'custom',
+            path: ['password_confirm'],
+            message: 'As senhas não coincidem',
+        });
+    }
+});
+
 
 export default function Profile() {
     const [userPhoto, setUserPhoto] = useState(
@@ -33,11 +49,12 @@ export default function Profile() {
 
     const toast = useToast()
     const { user } = useAuth();
-    const { control, handleSubmit } = useForm<FormDataProps>({
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         defaultValues: {
             name: user.name,
             email: user.email
-        }
+        },
+        resolver: zodResolver(profileSchema)
     });
 
     async function handleUserPhotoSelect() {
@@ -146,6 +163,7 @@ export default function Profile() {
                                     placeholder="Senha antiga"
                                     secureTextEntry
                                     onChangeText={onChange}
+                                    errorMessage={errors.name?.message}
                                 />
                             )}
                         />
@@ -159,6 +177,7 @@ export default function Profile() {
                                     placeholder="Nova senha"
                                     secureTextEntry
                                     onChangeText={onChange}
+                                    errorMessage={errors.password?.message}
                                 />
                             )}
                         />
@@ -171,6 +190,7 @@ export default function Profile() {
                                     placeholder="Confirme a nova senha"
                                     secureTextEntry
                                     onChangeText={onChange}
+                                    errorMessage={errors.confirm_password?.message}
                                 />
                             )}
                         />
